@@ -76,7 +76,7 @@ end
 % --- Executes just before imviewer4chan is made visible.
 function imviewer4chan_OpeningFcn(hObject, eventdata, handles, varargin)
 handles.step = 1; 
-handles.datafolder = 'C:\Users\bothma\Documents\MATLAB\Repression_Lag\ParameterFiles';
+handles.datafolder = 'C:\Users\bothma\Documents\MATLAB\Code\ImageProcessing\ParameterFiles';
 setup(hObject,eventdata,handles); 
 handles.output = hObject;
 guidata(hObject, handles);
@@ -213,18 +213,10 @@ function [hObject,handles] = step1(hObject, eventdata, handles)
     handles.Fluorophores = Datas.LSM_info.DataSummary.Fluorophores;
     handles.LSM_info=Datas.LSM_info;
     
-    
-    
-    
-
-    
     I = fxnprojectLSM4Chan(fin,handles.name,handles.chlnum,subsets,maxProj,LogFilterMaxProj,FilterParm,nucchan,ObjT,str2num(handles.imnum)); % project image from raw data
     
     Io=I.Io;
 
-    
-     
-    
     handles.I=I;
     handles.output = hObject;
     guidata(hObject, handles); 
@@ -246,6 +238,9 @@ function [hObject,handles] = step1(hObject, eventdata, handles)
 
     end
     imshowbig(Dis)
+    
+    
+    [hObject,handles] = SaveParm(hObject, eventdata, handles); % Function below that saves input parameters to handles.
    
     
 
@@ -280,7 +275,7 @@ save([handles.datafolder, '\LastNamesimviewer4chan.mat'],'namestore')
     
     Dis=zeros([a,b,3],class(I));
  
-    chlnumfind = find(handles.chlnum)
+    chlnumfind = find(handles.chlnum);
     
     for i=1:length(chlnumfind)
     
@@ -290,7 +285,9 @@ save([handles.datafolder, '\LastNamesimviewer4chan.mat'],'namestore')
     imshowbig(Dis)
     
     handles.If=I;
-    
+
+    [hObject,handles] = SaveParm(hObject, eventdata, handles); % Function below that saves input parameters to handles.
+        
     guidata(hObject, handles); 
     handles.output = hObject;
 
@@ -306,7 +303,9 @@ save([handles.datafolder, '\LastNamesimviewer4chan.mat'],'namestore')
       SaveType= get(handles.in1,'String');
       strcmp(SaveType,'mat');
 
-          
+      
+   [hObject,handles] = SaveParm(hObject, eventdata, handles); % Function below that saves input parameters to handles.
+      
       
       if exist(fout)==7 %Checks to see if output folder exists and if it doesn't it creates it.
       else
@@ -350,7 +349,7 @@ save([handles.datafolder, '\LastNamesimviewer4chan.mat'],'namestore')
     
     
     
-      fluorophores=''
+      fluorophores='';
       
       for jj=1:length(chlnumfind)
             fluorophores=[fluorophores, 'Ch' num2str(jj) ' : ' handles.Fluorophores{find(handles.chlnum==jj)} ';'];
@@ -378,6 +377,7 @@ save([handles.datafolder, '\LastNamesimviewer4chan.mat'],'namestore')
       Data.VoxelsizeZ = handles.VoxelSizeZ;
       Data.NumberSlices = handles.LSM_info.DimensionZ;
       Data.DataSummary=handles.LSM_info.DataSummary;
+      Data.SavedParameters=handles.savedata;
       
       save([fout,'\', outname,'_' handles.imnum],'Data')
       
@@ -390,14 +390,14 @@ save([handles.datafolder, '\LastNamesimviewer4chan.mat'],'namestore')
 
            
       imwrite(IoFDis,[fout,'\', outname,'_'...
-               handles.imnum,'First','.jpg'],'jpg');
+               handles.imnum,'_First','.jpg'],'jpg');
 
         imwrite(IoLDis,[fout,'\', outname,'_'...
-               handles.imnum,'Last','.jpg'],'jpg');         
+               handles.imnum,'_Last','.jpg'],'jpg');         
 
         
         imwrite(Display,[fout,'\', outname,'_'...
-               handles.imnum,'Preview','.jpg'],'jpg');    
+               handles.imnum,'_Preview','.jpg'],'jpg');    
            
 
                
@@ -680,6 +680,30 @@ save([handles.datafolder, '\imviewercolor.mat'],'parschan')
 
 
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+
+%%%%%% Save parameter script %%%%%%%%%%
+
+ function  [hObject,handles] = SaveParm(hObject, eventdata, handles)
+ 
+ for i=1:15                                % Saving Inputs
+ par=get(eval(['handles.in' num2str(i)]),'String');
+ lab = get(eval(['handles.in' num2str(i) 'label']),'String');
+ 
+ handles.savedata.(['step' num2str(handles.step)]).(['in' num2str(i)]) = par;
+ handles.savedata.(['step' num2str(handles.step)]).(['in' num2str(i) 'label']) = lab;
+ 
+ end
+ 
+
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+
+
+
+
 function imnumber_Callback(hObject, eventdata, handles)
     
 handles.step =  1;
