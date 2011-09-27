@@ -72,7 +72,7 @@ handles.output = hObject;
   % Some initial setup 
     handles.step = 1;  % Starting step
    
-    handles.datafolder = 'C:\Users\bothma\Documents\MATLAB\Repression_Lag\ParameterFiles'; % Specifies the folder where the Paramater files are kept
+    handles.datafolder = 'C:\Users\bothma\Documents\MATLAB\Code\ImageProcessing\ParameterFiles'; % Specifies the folder where the Paramater files are kept
    
     handles.stepsorder=['a';'b';'c';'d';'e';'f';'g';'h';'i';'s']; %Specifies the steps that are executed and their order. 
     % Defining steps in this way allows the relative order of steps to be easily changed and
@@ -172,10 +172,9 @@ step = handles.step;
 
 if handles.stepsorder(step) == 'a';
 
+[hObject,handles] = SaveParm(hObject, eventdata, handles); % Function below that saves input parameters to handles.
 
 
-SaveParm(hObject, eventdata, handles); % Function below that saves input parameters to handles.
-    
 NucChanInd = str2double(get(handles.in1,'String'));    %  Index of nuclear channel
 mRNA1ChanInd = str2double(get(handles.in2,'String'));  %  Index of first mRNA channel
 mRNA2ChanInd = str2double(get(handles.in3,'String'));  %  Index of second mRNA channel
@@ -825,17 +824,21 @@ if handles.stepsorder(step) == 's';
         
         savename = get(handles.DataFile,'String'); 
         savename = ([savename '_' handles.emb '_EmbProcV3Data']); 
+        
+        savenameImage = ([savename '_' handles.emb '_PreviewEmbProcV3Data']); % Change name such that this is dislpayed after preview in folders
+        
         save([handles.fin '\' savename], 'data');
         
         
         
         
-        imwrite(handles.DISPLAY,[handles.fin '\' savename 'image.jpg'],'JPG','Quality',100)
+        imwrite(handles.DISPLAY,[handles.fin '\' savenameImage 'image.jpg'],'JPG','Quality',100)
         
          dir = {'Data has been saved'};
         set(handles.directions,'String',dir);
                       
         ExistArray = zeros(10,1);
+        
         for i=1:10
             thename=[handles.fin '\' handles.fname '_' num2str(str2double(handles.emb) + i) '.mat'];
           ExistArray(i) = exist(thename,'file');
@@ -884,14 +887,21 @@ guidata(hObject,handles);
 
 % --- Function that saves the input parameters 
  
+
  function  [hObject,handles] = SaveParm(hObject, eventdata, handles)
  
  for i=1:8                                % Saving Inputs
- strut=get(eval(['handles.in' num2str(i)]),'String');
- trr=['handles.savedata.parms.' handles.stepsorder(handles.step) '.in' num2str(i) ' = '''  strut ''';'];
- eval(trr);
+ par=get(eval(['handles.in' num2str(i)]),'String');
+ lab = get(eval(['handles.in' num2str(i) 'label']),'String');
+ 
+ handles.savedata.parms.(['step' num2str(handles.step)]).(['in' num2str(i)]) = par;
+ handles.savedata.parms.(['step' num2str(handles.step)]).(['in' num2str(i) 'label']) = lab;
+ 
  end
  
+
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 
 
 % --- Executes on button press in AutoCycleButton.
