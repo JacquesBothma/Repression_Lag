@@ -41,7 +41,7 @@
 
 function [LabmRNANew,mRNAICenter,threshold] = segmentmRNANoFilt(I,threshold,N,smo,ThresMin,ThresMax)
 
-troubleshooting =1;
+troubleshooting =0;
 
 
 II=single(I);                                                  % Using single format speeds things up
@@ -60,7 +60,6 @@ if threshold==0
      else
      threshold=mRNAthreshold(II,N,smo,ThresMin,ThresMax);
      
-     figure
      imshowbig(II)
      
      end
