@@ -28,9 +28,9 @@
 % radiusgaus - radius of the gaussian filter to use (2-4)
 % EmbryoRegion - region of image that corresponds to embryo.
 % averagefiltsize - size of square averaging filter used to average image
-% gradient used in determing edge pixels.
-% Mthick - Number of pixels to dilate cores
-% Mthin - Number of pixels to shrink net
+% gradient used in determing edge pixels. (~5)
+% Mthick - Number of pixels to dilate cores (~10)
+% Mthin - Number of pixels to shrink net (~3)
 %
 % Outputs:
 %
@@ -45,7 +45,7 @@
 
 function LabNucNew=segmentnucleiExpand(I,NucCore,sizegaus,radiusgaus,EmbryoRegion,averagefiltsize,Mthick,Mthin)
 
-troubleshooting=0;
+troubleshooting=1;
 
 NucCourseFiltT= NucCore;
 II=single(I);                  
