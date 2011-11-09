@@ -38,6 +38,7 @@ load(name)
 
 global TIF;
 
+offset=0;
 
 
 stack=[];
@@ -55,7 +56,7 @@ TIF.StripCnt = 1;
 
             %read the image channels
             for c = 1:TIF.SamplesPerPixel
-                IMG.data{c} = read_plane(0, IMG.width, IMG.height, c);
+                IMG.data{c} = read_plane(offset, IMG.width, IMG.height, c);
             end
 
             
@@ -135,8 +136,10 @@ if ~all(size(plane) == [width height]),
     warning('tiffread2:Crop','Cropping data: found more bytes than needed');
 end
 
-% transpose the image (otherwise display is rotated in matlab)
-%plane = plane';
+% transpose the image (otherwise display is rotated in matlab) Takes longer
+% but worth it to avoid confusion (10/27/11)
+
+plane = plane';
 
 end
 
