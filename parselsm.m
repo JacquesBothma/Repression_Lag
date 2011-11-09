@@ -160,8 +160,7 @@ while  TIF.img_pos ~= 0
         entry = readIFDentry; %function that reads entry
         
         
-        %disp(strcat('reading entry <',num2str(TIF.entry_tag),'>'));
-
+    
         switch TIF.entry_tag
             case 254
                 TIF.NewSubfiletype = entry.val;
@@ -246,7 +245,8 @@ end
 
 Data.LSM_info=LSM_info;
 
-numberofstacks = round((count-2)/Data.LSM_info.DimensionZ);
+numberofstacks = (count-1)/Data.LSM_info.DimensionZ;
+
 
 for i =1:numberofstacks
     for j=1:Data.LSM_info.DimensionZ
@@ -262,7 +262,7 @@ Datas.filename=filename;
 
 save(filenameout,'Datas');
 
-fclose(TIF.file)
+fclose(TIF.file);
 
 end
 
@@ -369,7 +369,7 @@ else
            
            end
            
-           entry.val(i)= entry.val(i)+TEMPDat.counterr*(2^32-1);
+           entry.val(i)= entry.val(i)+TEMPDat.counterr*(2^32);
            
            TEMPDat.pastposi=entryvaltemp(i);
            
